@@ -11,7 +11,7 @@ Please fork this repository into your own GitHub account and send us the link to
 Please create a REST API service which handles data about airports, flights and passengers. At this time there is no need to think about scaling and running multiple instances of this service - assume that it will be running as a single instance. 
 
 ## You should:
-* use Java 17, Spring Boot 2.6+, Maven 3.5+ (if you prefer Gradle, let it be)
+* use Java 17, Spring Boot 2.6+, Maven 3.5+ (if you prefer Gradle that's also fine)
 * select a relational database like H2, MariaDB, PostgreSQL, etc.
 * create relevant tables for airports, flights and passengers (and another DB entities if needed) 
 * create relevant DAOs, services and controllers
