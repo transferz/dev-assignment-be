@@ -46,13 +46,9 @@ If you feel the database structure above is insufficient to cover the requiremen
 ## REST API description 
 
 We would like to see these endpoints:
-* Retrieve all airports with pagination and filtering on name and code
-* Retrieve the one airport by its id
+* Retrieve all airports with pagination and optional filtering on name and code
 * Add a new airport with validation for fields and unique code and name
 * Add new passenger on a flight with validation for fields and unique name per flight
-* Get statistics info about some airport per some day:
-  * number of arriving flights
-  * number of departing flights
 * Get statistical data based on the number of arriving and departing flights within certain time frames:
   * request has non-empty `start date time` as a parameter
   * request has non-empty `end date time` as a parameter
@@ -91,6 +87,7 @@ Additional functionality needed:
 * On each "Add new passenger" REST request, the service should calculate the amount of passengers per flight:
   * If the amount of passengers is 150 (amount externally configurable) or higher, the flight should depart and new passengers should be booked on the next flight
   * The destination of the flight should be auto-selected
+  * A maximum of 3 planes can depart every minute
 
 ## Notes
 * Please implement all part of the service with performance in mind
