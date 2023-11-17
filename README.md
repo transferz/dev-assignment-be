@@ -8,6 +8,8 @@ We are expecting that this task should take no more than 2 hours. Any result is 
 Please fork this repository into your own GitHub account and send us the link to the repository when you have finished.
 
 ## The challenge
+During high tide the dikes in The Netherlands have given way and we need to evacuate residents as soon as possible. One way to do this is by airlifting people out from Schiphol Airport. As this is an emergency, we're not concerned with where passengers will be taken, as long as we get them out as soon as possible. Each airplane used in the evacuation routine can have a maximum capacity of 150 passengers.
+
 Please create a REST API service which handles data about airports, flights and passengers. At this time there is no need to think about scaling and running multiple instances of this service - assume that it will be running as a single instance. 
 
 ## You should:
@@ -47,26 +49,26 @@ We would like to see these endpoints:
 * Retrieve all airports with pagination and filtering on name and code
 * Retrieve the one airport by its id
 * Add a new airport with validation for fields and unique code and name
-* Add new passenger with validation for fields and unique name per flight
+* Add new passenger on a flight with validation for fields and unique name per flight
 * Get statistics info about some airport per some day:
   * number of arriving flights
   * number of departing flights
-* Get statistical data based on time buckets as a response:
-  * request has non-empty start date time as a parameter
-  * request has non-empty end date time as a parameters
-  * request has `time bucket` length (in minutes), by default it is 20 minutes
-    * value should not be less than 5 minutes
+* Get statistical data based on the number of arriving and departing flights within certain time frames:
+  * request has non-empty `start date time` as a parameter
+  * request has non-empty `end date time` as a parameter
+  * request has `time bucket` length (in minutes) as a parameter, with a default of 20 and no less than 5 minutes
   * result data should have structure similar to table with two columns:
     * 1st column is date and time of time-bucket
     * 2nd column is amount of flights in this time bucket 
-  * please do not forget to validate input parameters
   * if some time bucket has no flights then this item can be skipped or 0/null flights can be shown (as you wish)
-  * it will be great to get this result directly from database with SQL query without additional business logic
+  * preferably this result will be obtained directly from the database without additional business logic
   * example of response with time bucket size as 10 minutes:
-    * 2023-11-16 10:00 | 14    
-    * 2023-11-16 10:10 | 8
-    * 2023-11-16 10:20 | 24
-    * 2023-11-16 10:30 | 1
+    * ```
+      2023-11-16 10:00 | 14    
+      2023-11-16 10:10 | 8
+      2023-11-16 10:20 | 24
+      2023-11-16 10:30 | 1
+      ```
   * example of JSON for this response (structure of JSON can differ)
     * ```
       [
@@ -81,16 +83,14 @@ We would like to see these endpoints:
          }
       ]  
       ```
-  * Meaning: there were 14 flights from 2023-11-16 10:00 (inclusive) till 2023-11-16 10:10 (exclusive) and so on. 
+      In this example there were 14 flights arriving or departing from 2023-11-16 10:00 till 2023-11-16 10:10 (and so on). 
       
 ## Business logic
 
 Additional functionality needed: 
 * On each "Add new passenger" REST request, the service should calculate the amount of passengers per flight:
-  * If the amount of passengers on a flight becomes higher than 150 (amount should be externally configurable), a new flight should be added into the database
-  * New flight can have null origin and destination airports, also arrival time as well 
-  * New flight should have departure date & time of the moment of last passenger was added
-  * Note: Passenger.flightCode field will be helpful
+  * If the amount of passengers is 150 (amount externally configurable) or higher, the flight should depart and new passengers should be booked on the next flight
+  * The destination of the flight should be auto-selected
 
 ## Notes
 * Please implement all part of the service with performance in mind
