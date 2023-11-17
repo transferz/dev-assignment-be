@@ -3,7 +3,7 @@
 ## Introduction
 This is development challenge for Java developer candidates at transferz. The goal of this task is to understand your way of thinking and problem-solving skills around composing new services, database design, SQL composing, understandign of multi-threading and unit-testing.
 
-We are expecting that this task should take no more than 2 hours. Any result is important for us, if you feel that something is not solved it is not a problem. TODOs and comments in the source code are welcome.
+We are expecting that this task should take no more than 2 hours (including reading this documentation). Any result is important for us, if you feel that something is not solved it is not a problem. TODOs and comments in the source code are welcome.
 
 Please fork this repository into your own GitHub account and send us the link to the repository when you have finished.
 
