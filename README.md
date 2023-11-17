@@ -5,6 +5,8 @@ This is development challenge for Java developer candidates at transferz. The go
 
 We are expecting that this task should take no more than 2 hours. Any result is important for us, if you feel that something is not solved it is not a problem. TODOs and comments in the source code are welcome.
 
+Please fork this repository into your own GitHub account and send us the link to the repository when you have finished.
+
 ## The challenge
 Please create a REST API service which handles data about airports, flights and passengers. At this time there is no need to think about scaling and running multiple instances of this service - assume that it will be running as a single instance. 
 
