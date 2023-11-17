@@ -1,33 +1,26 @@
 # Welcome!
 
-This is testing task for new Java BE candidates.
-The goal of this task is to understand the way of thinking and problem-solving of a candidate.
-Partially such skills like composing new service, database design, SQL composing, multi-threading understanding
-and unit-testing.
+## Introduction
+This is development challenge for Java developer candidates at transferz. The goal of this task is to understand your way of thinking and problem-solving skills around composing new services, database design, SQL composing, understandign of multi-threading and unit-testing.
 
-We are expecting that this task should take no more than 2 hours of implementation.
-Any result is important for us, if you feel that something is not solved it is not a problem.
-TODOs and comments in the source code are welcome.
+We are expecting that this task should take no more than 2 hours. Any result is important for us, if you feel that something is not solved it is not a problem. TODOs and comments in the source code are welcome.
 
-Please create a REST API service which handles data about airports, flights and passengers.
-No need to think about scaling and multiple instances of this service. 
-Lets imaging that it will be a single node only. 
+## The challenge
+Please create a REST API service which handles data about airports, flights and passengers. At this time there is no need to think about scaling and running multiple instances of this service - assume that it will be running as a single instance. 
 
-## You need:
+## You should:
 * use Java 17, Spring Boot 2.6+, Maven 3.5+ (if you prefer Gradle, let it be)
-* select SQL DB like H2, PostgreSQL, etc
-* create tables for airports, flights and passengers (and another DB entities if needed)
-* create DAO, services and controllers
-* add business logic
-* test coverage at least 80%
-* you can change initial design to get better performance, etc
-* the Maven build should be successful
-* the final JAR file should be runnable
+* select a relational database like H2, MariaDB, PostgreSQL, etc.
+* create relevant tables for airports, flights and passengers (and another DB entities if needed) 
+* create relevant DAOs, services and controllers
+* add business logic to accomplish the tasks below
+* ensure the application has at least 80% test coverage
+* change the initial design to get better performance if needed
+* ensure the Maven build is successful
+* ensure the final JAR file is runnable
                        
 ## Database description
 
-* It should be SQL database. 
-  * For example, H2 in memory with embedded console https://www.baeldung.com/spring-boot-h2-database
 * Airport table should have at least:
   * `name` column as varchar(255)
   * `code` column as varchar(20)
@@ -42,17 +35,16 @@ Lets imaging that it will be a single node only.
   * `name` column as varchar(1024)
   * `flightCode` column as varchar(20)
 
-During the DB design, please think about additional constraints and type of `id` field and way of its generation 
-for the better performance and security. It will be great to get your opinion about.
+During the database design, please think about additional constraints and type of `id` field and way of its generation for better performance and security.
 
-If you feel that some another tables or columns is needed then you can add them and change the structure of tables above.
+If you feel the database structure above is insufficient to cover the requirements you are free to change the structure as you see fit.
 
 ## REST API description 
 
 We would like to see these endpoints:
-* Get all airports with pagination
-* Get the one airport by its id
-* Add new airport with validation for fields and unique code and name
+* Retrieve all airports with pagination and filtering on name and code
+* Retrieve the one airport by its id
+* Add a new airport with validation for fields and unique code and name
 * Add new passenger with validation for fields and unique name per flight
 * Get statistics info about some airport per some day:
   * number of arriving flights
@@ -92,17 +84,16 @@ We would like to see these endpoints:
 ## Business logic
 
 Additional functionality needed: 
-* On each "Add new passenger" REST request, service should calculate amount of passengers per flight.
-  * If amount of passengers per some flight became 150 or more, new flight should be added into DB
+* On each "Add new passenger" REST request, the service should calculate the amount of passengers per flight:
+  * If the amount of passengers on a flight becomes higher than 150 (amount should be externally configurable), a new flight should be added into the database
   * New flight can have null origin and destination airports, also arrival time as well 
-  * New flight should have departure datetime of the moment of last passenger was added
-  * It will be great to have max amount of passengers configurable from application.yml file 
+  * New flight should have departure date & time of the moment of last passenger was added
   * Note: Passenger.flightCode field will be helpful
 
 ## Notes
-* Please implement all part of the service with best performance
-* Do not forget that service can receive many requests at the same moment
+* Please implement all part of the service with performance in mind
+* Keep in mind that the service can receive parallel requests
 * Remember that good tests cover negative scenarios as well
-* You have any questions fell free to ask them, we are here to help you
+* You have any questions feel free to ask them, we are here to help you
 * Do not forget to re-read the task to be sure every topic is covered
 * Good luck!
