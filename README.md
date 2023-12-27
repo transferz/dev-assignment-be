@@ -1,4 +1,5 @@
-# Welcome!
+# Transferz development challenge
+###### v1.2
 
 ## Introduction
 This is development challenge for Java developer candidates at transferz. The goal of this task is to understand your way of thinking and problem-solving skills around composing new services, database design, SQL composing, understandign of multi-threading and unit-testing.
@@ -49,45 +50,13 @@ We would like to see these endpoints:
 * Retrieve all airports with pagination and optional filtering on name and code
 * Add a new airport with validation for fields and unique code and name
 * Add new passenger on a flight with validation for fields and unique name per flight
-* Get statistical data based on the number of arriving and departing flights within certain time frames:
-  * request has non-empty `start date time` as a parameter
-  * request has non-empty `end date time` as a parameter
-  * request has `time bucket` length (in minutes) as a parameter, with a default of 20 and no less than 5 minutes
-  * result data should have structure similar to table with two columns:
-    * 1st column is date and time of time-bucket
-    * 2nd column is amount of flights in this time bucket 
-  * if some time bucket has no flights then this item can be skipped or 0/null flights can be shown (as you wish)
-  * preferably this result will be obtained directly from the database without additional business logic
-  * example of response with time bucket size as 10 minutes:
-    * ```
-      2023-11-16 10:00 | 14    
-      2023-11-16 10:10 | 8
-      2023-11-16 10:20 | 24
-      2023-11-16 10:30 | 1
-      ```
-  * example of JSON for this response (structure of JSON can differ)
-    * ```
-      [
-         {
-           "dt": "2023-11-16 10:00",
-           "value": 14
-         },
-         ...
-         {
-           "dt": "2023-11-16 10:30",
-           "value": 1
-         }
-      ]  
-      ```
-      In this example there were 14 flights arriving or departing from 2023-11-16 10:00 till 2023-11-16 10:10 (and so on). 
       
 ## Business logic
 
 Additional functionality needed: 
 * On each "Add new passenger" REST request, the service should calculate the amount of passengers per flight:
   * If the amount of passengers is 150 (amount externally configurable) or higher, the flight should depart and new passengers should be booked on the next flight
-  * The destination of the flight should be auto-selected
-  * A maximum of 3 planes can depart every minute
+  * The destination of the flight should be auto-selected based on the available airports
 
 ## Notes
 * Please implement all part of the service with performance in mind
