@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,7 +27,7 @@ public class Passenger {
 	@Column(nullable = false)
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "flight_id", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "flight_code", referencedColumnName = "code", nullable = false)
 	private Flight flight;
 }

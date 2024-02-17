@@ -1,11 +1,9 @@
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE flights (
-    flight_id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    code                   VARCHAR(20) NOT NULL UNIQUE,
-    origin_airport_id      UUID        NOT NULL,
-    destination_airport_id UUID        NOT NULL,
-    departure_date_time    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    arrival_date_time      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    FOREIGN KEY (origin_airport_id) REFERENCES airports (airport_id),
-    FOREIGN KEY (destination_airport_id) REFERENCES airports (airport_id)
+    code                     VARCHAR(20) PRIMARY KEY,
+    origin_airport_code      VARCHAR(20)                 NOT NULL,
+    destination_airport_code VARCHAR(20)                 NOT NULL,
+    departure_time           TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    arrival_time             TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    FOREIGN KEY (origin_airport_code) REFERENCES airports (code),
+    FOREIGN KEY (destination_airport_code) REFERENCES airports (code)
 );
