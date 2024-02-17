@@ -1,17 +1,38 @@
 package com.transferz.dao;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-public class Flight
-{
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "flights")
+public class Flight {
+	@Id
+	@Column(nullable = false)
 	private String code;
 
-	private String originAirportId;
+	@ManyToOne
+	@JoinColumn(name = "origin_airport_id", referencedColumnName = "code", nullable = false)
+	private Airport originAirport;
 
-	private String destinationAirportId;
+	@ManyToOne
+	@JoinColumn(name = "destination_airport_id", referencedColumnName = "code", nullable = false)
+	private Airport destinationAirport;
 
+	@Column(name = "departure_time", nullable = false)
 	private LocalDateTime departureTime;
 
+	@Column(name = "arrival_time", nullable = false)
 	private LocalDateTime arrivalTime;
-	
 }
