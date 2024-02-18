@@ -11,23 +11,34 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 class AirportServiceImplTest {
 
     @Mock
     private AirportRepository airportRepository;
-
     private AirportServiceImpl airportService;
+    private Validator validator;
+
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         airportService = new AirportServiceImpl(airportRepository);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     @Test
@@ -75,5 +86,26 @@ class AirportServiceImplTest {
     @Test
     void findAllAirports_invalidPageable() {
         assertThrows(IllegalArgumentException.class, () -> airportService.findAllAirports(PageRequest.of(-1, -1)));
+    }
+
+    @Test
+    public void addAirport_WithValidAirport_SavesAirport() {
+        Airport airport = new Airport("JFK", "John F Kennedy International", "USA");
+
+        when(airportRepository.save(any(Airport.class))).thenReturn(airport);
+        Airport savedAirport = airportService.addAirport(airport);
+
+        assertEquals("JFK", savedAirport.getCode());
+        assertEquals("John F Kennedy International", savedAirport.getName());
+        assertEquals("USA", savedAirport.getCountry());
+    }
+
+    @Test
+    public void addAirport_WithInvalidAirport_ReturnsConstraintViolations() {
+        Airport invalidAirport = new Airport("", "", "");
+
+        Set<ConstraintViolation<Airport>> violations = validator.validate(invalidAirport);
+
+        assertEquals(3, violations.size());
     }
 }
