@@ -1,11 +1,20 @@
 package com.transferz.dao;
 
-public class Airport
-{
-	private String name;
+import jakarta.persistence.*;
+import lombok.Data;
 
-	private String code;
+import java.util.UUID;
 
-	private String country;
-	
+@Entity
+@Data
+public class Airport {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID airportId;
+    @Column(unique = true)
+    private String name;
+    @Column(unique = true)
+    private String code;
+    private String country;
+
 }

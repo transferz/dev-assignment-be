@@ -1,20 +1,30 @@
+---
 server:
   port: 8080
   shutdown: graceful
 spring:
   datasource:
-    url:
-    username:
-    password:
-    driver-class-name:
+    url: jdbc:h2:mem:evacuation
+    username: null
+    password: null
+    driver-class-name: org.h2.Driver
   jpa:
-    show-sql:
+    hibernate:
+      ddl-auto: update
+      show-sql: null
+  h2:
+    console:
+      enabled: true
   jackson:
     serialization:
       write-dates-as-timestamps: false
     date-format: yyyy-MM-dd HH:mm:ss
+  flyway:
+    locations: classpath:db/migration
 management:
   endpoints:
     web:
       exposure:
-        include: 'info,health,metrics'
+        include: info,health,metrics
+flight:
+  capacity: 2
