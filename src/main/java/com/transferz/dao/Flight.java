@@ -16,7 +16,6 @@ import java.util.UUID;
 public class Flight {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "flight_id")
 	private UUID flightId;
 
@@ -36,4 +35,13 @@ public class Flight {
 
 	@Column(name = "arrival_time", nullable = false)
 	private LocalDateTime arrivalTime;
+
+	public Flight(String code, Airport originAirport, Airport destinationAirport, LocalDateTime departureTime, LocalDateTime arrivalTime) {
+		this.flightId = UUID.randomUUID();
+		this.code = code;
+		this.originAirport = originAirport;
+		this.destinationAirport = destinationAirport;
+		this.departureTime = departureTime;
+		this.arrivalTime = arrivalTime;
+	}
 }

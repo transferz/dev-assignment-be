@@ -15,7 +15,6 @@ import java.util.UUID;
 @Table(name = "passengers")
 public class Passenger {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "passenger_id")
 	private UUID passengerId;
 
@@ -25,4 +24,10 @@ public class Passenger {
 	@ManyToOne
 	@JoinColumn(name = "flight_code", referencedColumnName = "code", nullable = false)
 	private Flight flight;
+
+	public Passenger(String name, Flight flight) {
+		this.passengerId = UUID.randomUUID();
+		this.name = name;
+		this.flight = flight;
+	}
 }

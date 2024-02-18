@@ -14,7 +14,6 @@ import java.util.UUID;
 @Table(name = "airports")
 public class Airport {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "airport_id")
 	private UUID airportId;
 
@@ -26,4 +25,11 @@ public class Airport {
 
 	@Column(nullable = false)
 	private String country;
+
+	public Airport(String code, String name, String country) {
+		this.airportId = UUID.randomUUID();
+		this.code = code;
+		this.name = name;
+		this.country = country;
+	}
 }
