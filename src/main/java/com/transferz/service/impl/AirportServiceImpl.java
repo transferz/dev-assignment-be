@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+
 @Service
 public class AirportServiceImpl implements AirportService {
     private final AirportRepository airportRepository;
@@ -23,7 +25,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public Airport addAirport(Airport airport) {
+    public Airport addAirport(@Valid Airport airport) {
         return airportRepository.save(airport);
     }
 }

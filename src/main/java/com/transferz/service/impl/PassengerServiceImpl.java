@@ -9,6 +9,8 @@ import com.transferz.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+
 @Service
 public class PassengerServiceImpl implements PassengerService {
     private final PassengerRepository passengerRepository;
@@ -25,7 +27,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public Passenger addPassenger(Passenger passenger) {
+    public Passenger addPassenger(@Valid Passenger passenger) {
         Flight flight = passenger.getFlight();
 
         if (isFlightFull(flight.getCode())) {
