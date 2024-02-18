@@ -5,8 +5,8 @@ import com.transferz.dao.Flight;
 import com.transferz.dao.Passenger;
 import com.transferz.repository.FlightRepository;
 import com.transferz.repository.PassengerRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -17,9 +17,12 @@ import javax.validation.ValidatorFactory;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class PassengerServiceImplTest {
     private PassengerServiceImpl passengerService;
@@ -36,7 +39,7 @@ public class PassengerServiceImplTest {
 
     private static final Integer MAX_PASSENGERS = 150;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(flightProperties.getMaxPassengers()).thenReturn(MAX_PASSENGERS);
@@ -78,7 +81,7 @@ public class PassengerServiceImplTest {
     }
 
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void addPassenger_WithValidPassengerButAllFlightsAreFull_ThrowsRuntimeException() {
         Flight flight = new Flight("FN123", null, null, null, null);
         Passenger passenger = new Passenger("John Doe", flight);
@@ -86,9 +89,8 @@ public class PassengerServiceImplTest {
         when(passengerRepository.countPassengerByFlightCode(flight.getCode())).thenReturn(MAX_PASSENGERS);
         when(flightRepository.findAvailableFlight(MAX_PASSENGERS)).thenReturn(Optional.empty());
 
-        passengerService.addPassenger(passenger);
+        assertThrows(RuntimeException.class, () -> passengerService.addPassenger(passenger));
     }
-
     @Test
     public void addPassenger_WithInvalidPassenger_ReturnsConstraintViolations() {
         Passenger invalidPassenger = new Passenger("", null);

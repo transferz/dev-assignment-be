@@ -3,8 +3,8 @@ package com.transferz.service.impl;
 import com.transferz.dao.Airport;
 import com.transferz.dao.Flight;
 import com.transferz.repository.FlightRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -15,7 +15,7 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 public class FlightServiceImplTest {
@@ -26,7 +26,7 @@ public class FlightServiceImplTest {
     @Mock
     private FlightRepository flightRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         flightService = new FlightServiceImpl(flightRepository);
