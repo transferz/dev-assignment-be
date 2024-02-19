@@ -1,0 +1,105 @@
+{
+  "info": {
+    "_postman_id": "55a735a4-2e60-42e5-b949-7c17ad64f5bf",
+    "name": "Evacuation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32521704"
+  },
+  "item": [
+    {
+      "name": "GET Airports",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/evacuate/nl/airports?name={name}&code={code}&page={pagenumber}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "evacuate",
+            "nl",
+            "airports"
+          ],
+          "query": [
+            {
+              "key": "name",
+              "value": "{name}"
+            },
+            {
+              "key": "code",
+              "value": "{code}"
+            },
+            {
+              "key": "page",
+              "value": "{pagenumber}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Airport",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Schipol\",\n    \"code\": \"AMS\",\n    \"country\": \"Netherlands\"\n\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/evacuate/nl/airport",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "evacuate",
+            "nl",
+            "airport"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Passenger",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\" : \"Joel\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/evacuate/nl/passenger",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "evacuate",
+            "nl",
+            "passenger"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

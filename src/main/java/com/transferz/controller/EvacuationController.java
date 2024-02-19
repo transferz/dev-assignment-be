@@ -25,7 +25,10 @@ public class EvacuationController {
 
     /**
      * Handles GET requests to retrieve all airports
-     *
+     * @param name is optional, used to filter airports with respect to name
+     * @param code is optional, used to filter airports with respect to code
+     * @param page is optional, used to filter airports with respect to page number. Default value is 0
+     * @param size is optional, used to set maximum no of contents to be displayed in a page. Default value is 10
      * @return ResponseEntity containing success message and list of airports.
      */
     @GetMapping("airports")

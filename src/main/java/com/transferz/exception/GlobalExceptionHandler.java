@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({PassengerAlreadyExistException.class})
+    @ExceptionHandler({PassengerAlreadyExistException.class, AirportAlreadyExistException.class})
     public ResponseEntity<GenericErrorResponse> handlePassengerExistException(Exception e) {
         errorResponse.setErrorCode(HttpStatus.CONFLICT);
         errorResponse.setErrorMessage(e.getMessage());

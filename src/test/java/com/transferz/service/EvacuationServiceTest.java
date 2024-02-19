@@ -6,10 +6,7 @@ import com.transferz.dao.Passenger;
 import com.transferz.dto.AddNewAirportRequest;
 import com.transferz.dto.AddNewPassengerRequest;
 import com.transferz.dto.GenericSuccessResponse;
-import com.transferz.exception.AirportNotFoundException;
-import com.transferz.exception.FlightNotFoundException;
-import com.transferz.exception.PassengerAlreadyExistException;
-import com.transferz.exception.PassengerNotFoundException;
+import com.transferz.exception.*;
 import com.transferz.repository.AirportRepository;
 import com.transferz.repository.FlightRepository;
 import com.transferz.repository.PassengerRepository;
@@ -18,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +56,7 @@ class EvacuationServiceTest {
         when(airportRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
 
         Page<Airport> result = evacuationService.getAllAirports(null, null, Pageable.unpaged());
+
         assertNotNull(result);
         verify(airportRepository, times(1)).findAll(any(Pageable.class));
     }
@@ -68,22 +65,44 @@ class EvacuationServiceTest {
     void testGetAllAirportsException() {
         when(airportRepository.findAll(any(Pageable.class))).thenThrow(NullPointerException.class);
 
-        assertThrows(Exception.class, () -> evacuationService.getAllAirports(null, null, Pageable.unpaged()));
+        assertThrows(DatabaseException.class, () -> evacuationService.getAllAirports(null, null, Pageable.unpaged()));
 
         verify(airportRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
-    void testAddNewAirport() {
+    void testAddNewAirport() throws AirportAlreadyExistException {
         AddNewAirportRequest request = new AddNewAirportRequest();
         request.setName("Test Airport");
         request.setCode("TEST");
         request.setCountry("Test Country");
+
         when(modelMapper.map(any(AddNewAirportRequest.class), any())).thenReturn(new Airport());
         when(airportRepository.save(any(Airport.class))).thenReturn(new Airport());
         when(validationWrapper.mapSuccessResponse(any(), any())).thenReturn(new GenericSuccessResponse());
+
         assert (evacuationService.addNewAirport(request).getClass()).equals(GenericSuccessResponse.class);
         verify(airportRepository, times(1)).save(any(Airport.class));
+    }
+
+    @Test
+    void testAirportAlreadyExists() {
+        AddNewAirportRequest request = new AddNewAirportRequest();
+        request.setName("Test Airport");
+        request.setCode("TST");
+        request.setCountry("Test Country");
+        Airport airport = new Airport();
+        airport.setName("Test Airport");
+        airport.setCode("TST");
+        airport.setCountry("Test Country");
+        List<Airport> airportList = new ArrayList<>();
+        airportList.add(airport);
+
+        when(modelMapper.map(any(AddNewAirportRequest.class), any())).thenReturn(new Airport());
+        when(airportRepository.findAll()).thenReturn(airportList);
+
+        assertThrows(AirportAlreadyExistException.class, () -> evacuationService.addNewAirport(request));
+        verify(airportRepository, times(0)).save(any(Airport.class));
     }
 
     @Test
@@ -102,6 +121,7 @@ class EvacuationServiceTest {
         when(flightRepository.findFirstAvailableFlight()).thenReturn(Optional.of(new Flight()));
         when(flightRepository.save(any(Flight.class))).thenReturn(new Flight());
         when(validationWrapper.mapSuccessResponse(any(), any())).thenReturn(new GenericSuccessResponse());
+
         assert (evacuationService.addNewPassenger(request).getClass()).equals(GenericSuccessResponse.class);
         verify(passengerRepository, times(1)).save(any(Passenger.class));
     }
@@ -112,7 +132,7 @@ class EvacuationServiceTest {
         request.setName("John");
         Passenger passenger = new Passenger();
         passenger.setName("Alex");
-        List<Passenger> passengers = Mockito.mock(List.class);
+        List<Passenger> passengers = mock(List.class);
         passengers.add(passenger);
 
         when(modelMapper.map(any(AddNewPassengerRequest.class), any())).thenReturn(new Passenger());
@@ -123,6 +143,7 @@ class EvacuationServiceTest {
         when(flightRepository.save(any(Flight.class))).thenReturn(new Flight());
         when(passengers.size()).thenReturn(capacity);
         when(validationWrapper.mapSuccessResponse(any(), any())).thenReturn(new GenericSuccessResponse());
+
         assert (evacuationService.addNewPassenger(request).getClass()).equals(GenericSuccessResponse.class);
         verify(passengerRepository, times(1)).save(any(Passenger.class));
     }
@@ -133,7 +154,7 @@ class EvacuationServiceTest {
         request.setName("John");
         Passenger passenger = new Passenger();
         passenger.setName("Alex");
-        List<Passenger> passengers = Mockito.mock(List.class);
+        List<Passenger> passengers = mock(List.class);
         passengers.add(passenger);
 
         when(modelMapper.map(any(AddNewPassengerRequest.class), any())).thenReturn(new Passenger());
@@ -141,6 +162,7 @@ class EvacuationServiceTest {
         when(passengerRepository.findAllByFlightCode(any())).thenReturn(Optional.of(passengers));
         when(airportRepository.findAvailableAirportCode()).thenReturn(Optional.empty());
         when(flightRepository.findFirstAvailableFlight()).thenReturn(Optional.of(new Flight()));
+
         assertThrows(AirportNotFoundException.class, () -> evacuationService.addNewPassenger(request));
         verify(flightRepository, times(0)).save(any(Flight.class));
     }
@@ -158,6 +180,7 @@ class EvacuationServiceTest {
         when(passengerRepository.save(any(Passenger.class))).thenReturn(new Passenger());
         when(passengerRepository.findAllByFlightCode(any())).thenReturn(Optional.of(passengers));
         when(flightRepository.findFirstAvailableFlight()).thenReturn(Optional.of(new Flight()));
+
         assertThrows(PassengerAlreadyExistException.class, () -> evacuationService.addNewPassenger(request));
         verify(passengerRepository, times(0)).save(any(Passenger.class));
     }
@@ -166,9 +189,11 @@ class EvacuationServiceTest {
     void testPassengerNotFoundException() {
         AddNewPassengerRequest request = new AddNewPassengerRequest();
         request.setName("John");
+
         when(modelMapper.map(any(AddNewPassengerRequest.class), any())).thenReturn(new Passenger());
         when(passengerRepository.save(any(Passenger.class))).thenReturn(new Passenger());
         when(flightRepository.findFirstAvailableFlight()).thenReturn(Optional.of(new Flight()));
+
         assertThrows(PassengerNotFoundException.class, () -> evacuationService.addNewPassenger(request));
         verify(passengerRepository, times(0)).save(any(Passenger.class));
     }
@@ -180,6 +205,7 @@ class EvacuationServiceTest {
 
         when(modelMapper.map(any(AddNewPassengerRequest.class), any())).thenReturn(new Passenger());
         when(passengerRepository.save(any(Passenger.class))).thenReturn(new Passenger());
+
         assertThrows(FlightNotFoundException.class, () -> evacuationService.addNewPassenger(request));
         verify(passengerRepository, times(0)).save(any(Passenger.class));
     }

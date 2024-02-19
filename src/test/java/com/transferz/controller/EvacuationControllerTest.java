@@ -34,6 +34,24 @@ class EvacuationControllerTest extends IntegrationTest {
     }
 
     @Test
+    void addAirportException() throws Exception {
+        mvc.perform((post("/evacuate/nl/airport")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"\", \"code\": \"CCJ\", \"country\": \"India\"}")
+                ))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addAirportInternalErrorException() throws Exception {
+        mvc.perform((post("/evacuate/nl/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"A\", \"code\": \"CCJ\", \"country\": \"India\"}")
+                ))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
     void addPassengerSuccess() throws Exception {
         mvc.perform((post("/evacuate/nl/passenger")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -41,5 +59,15 @@ class EvacuationControllerTest extends IntegrationTest {
                 ))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Neethu")));
+    }
+
+    @Test
+    void addPassengerException() throws Exception {
+        addPassengerSuccess();
+        mvc.perform((post("/evacuate/nl/passenger")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"Neethu\"}")
+                ))
+                .andExpect(status().isConflict());
     }
 }

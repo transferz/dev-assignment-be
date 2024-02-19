@@ -33,12 +33,6 @@ public class EvacuationServiceImpl implements EvacuationService {
     @Value("${flight.capacity}")
     private int capacity;
 
-    private static void checkPassengerIfAlreadyPresent(AddNewPassengerRequest addNewPassengerRequest, List<Passenger> passengersOfFlight) throws PassengerAlreadyExistException {
-        if (passengersOfFlight.stream().anyMatch(passenger -> passenger.getName().equals(addNewPassengerRequest.getName()))) {
-            throw new PassengerAlreadyExistException(ApiConstants.PASSENGER_EXISTS_EXCEPTION);
-        }
-    }
-
     public Page<Airport> getAllAirports(String name, String code, Pageable pageable) throws DatabaseException {
         log.info("List of customers returned");
         try {
@@ -56,14 +50,16 @@ public class EvacuationServiceImpl implements EvacuationService {
         }
     }
 
-    public GenericSuccessResponse addNewAirport(AddNewAirportRequest addNewAirportRequest) {
-        log.info("Created airport : {} with ID: {} ", addNewAirportRequest.getName(), addNewAirportRequest.getCode());
+    public GenericSuccessResponse addNewAirport(AddNewAirportRequest addNewAirportRequest) throws AirportAlreadyExistException {
         Airport airport = modelMapper.map(addNewAirportRequest, Airport.class);
+        checkAirportIfAlreadyPresent(addNewAirportRequest, airportRepository.findAll());
         airportRepository.save(airport);
+        log.info("Created airport : {} with ID: {} ", addNewAirportRequest.getName(), addNewAirportRequest.getCode());
         return validationWrapper.mapSuccessResponse(airport, ApiConstants.SUCCESS_RESPONSE);
     }
 
     public GenericSuccessResponse addNewPassenger(AddNewPassengerRequest addNewPassengerRequest) throws AirportNotFoundException, PassengerAlreadyExistException, PassengerNotFoundException, FlightNotFoundException {
+
         var firstAvailableFlight = flightRepository.findFirstAvailableFlight()
                 .orElseThrow(() -> new FlightNotFoundException(ApiConstants.FLIGHT_EXCEPTION));
         List<Passenger> passengersOfFlight = passengerRepository.findAllByFlightCode(firstAvailableFlight.getCode())
@@ -71,9 +67,10 @@ public class EvacuationServiceImpl implements EvacuationService {
 
         checkPassengerIfAlreadyPresent(addNewPassengerRequest, passengersOfFlight);
         Passenger passenger = mapFlightToPassenger(addNewPassengerRequest, firstAvailableFlight);
-        checkIfFlightCapacityIsFull(passengersOfFlight, firstAvailableFlight);
+        checkIfFlightCapacityIsFull(firstAvailableFlight);
+
         flightRepository.save(firstAvailableFlight);
-        log.info("Added passenger : {} ", addNewPassengerRequest.getName());
+
         PassengerResponse passengerResponse = mapPassengerResponse(passenger);
         return validationWrapper.mapSuccessResponse(passengerResponse, ApiConstants.SUCCESS_RESPONSE);
 
@@ -87,12 +84,16 @@ public class EvacuationServiceImpl implements EvacuationService {
         return passengerResponse;
     }
 
-    private void checkIfFlightCapacityIsFull(List<Passenger> passengersOfFlight, Flight firstAvailableFlight) throws AirportNotFoundException {
+    //check if flight is full
+    private void checkIfFlightCapacityIsFull(Flight firstAvailableFlight) throws AirportNotFoundException, PassengerNotFoundException {
+        List<Passenger> passengersOfFlight = passengerRepository.findAllByFlightCode(firstAvailableFlight.getCode())
+                .orElseThrow(() -> new PassengerNotFoundException(ApiConstants.PASSENGER_EXCEPTION));
         if (passengersOfFlight.size() == capacity) {
             departFlight(firstAvailableFlight);
         }
     }
 
+    //depart flight if full
     private void departFlight(Flight firstAvailableFlight) throws AirportNotFoundException {
         String destinationAirportId = airportRepository.findAvailableAirportCode()
                 .orElseThrow(() -> new AirportNotFoundException(ApiConstants.AIRPORT_EXCEPTION));
@@ -106,7 +107,21 @@ public class EvacuationServiceImpl implements EvacuationService {
         passenger.setFlightCode(firstAvailableFlight.getCode());
         passenger.setFlight(firstAvailableFlight);
         passengerRepository.save(passenger);
+        log.info("Added passenger : {} ", addNewPassengerRequest.getName());
         return passenger;
     }
 
+    //Prevent duplicate passenger entries in same flight
+    private void checkPassengerIfAlreadyPresent(AddNewPassengerRequest addNewPassengerRequest, List<Passenger> passengersOfFlight) throws PassengerAlreadyExistException {
+        if (passengersOfFlight.stream().anyMatch(passenger -> passenger.getName().equals(addNewPassengerRequest.getName()))) {
+            throw new PassengerAlreadyExistException(ApiConstants.PASSENGER_EXISTS_EXCEPTION);
+        }
+    }
+
+    //Prevent duplicate airport entries
+    private void checkAirportIfAlreadyPresent(AddNewAirportRequest addNewAirportRequest, List<Airport> airportList) throws AirportAlreadyExistException {
+        if (airportList.stream().anyMatch(airport -> airport.getCode().equals(addNewAirportRequest.getCode()))) {
+            throw new AirportAlreadyExistException(ApiConstants.AIRPORT_EXISTS_EXCEPTION);
+        }
+    }
 }

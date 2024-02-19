@@ -84,3 +84,35 @@ Additional functionality needed:
 * You have any questions feel free to ask them, we are here to help you
 * Do not forget to re-read the task to be sure every topic is covered
 * Good luck!
+
+# SOLUTION
+
+## API
+
+The application is developed using Java, Spring Boot and in-memory H2 database.
+Following are the major features of the application.
+
+| Method | Path                                    | Description                                |
+|--------|-----------------------------------------|--------------------------------------------|
+| GET    | /evacuate/nl/get?name={}&code={}&page=0 | Retrieves full details of all the Airports |
+| POST   | /evacuate/nl/airport                    | Add an airport                             |
+| POST   | /evacuate/nl/passenger                  | Add a passenger                            |
+
+## Steps to install
+
+1. Pull the repository into your local drive.
+2. Project is built on `JDK 21` and `Spring boot 3.2.2`
+3. `application.yaml` is kept along with the project
+4. This project uses `In-memory database - H2 `
+5. Run the application using mvn `spring-boot:run` or from your IDE.
+
+## Postman Collection
+
+A postman collection `Evacuation_Postman_Collection.json` is included in the projects folder which could be used to test
+and validate once the API is up and running.
+
+## Note
+
+1. Database schema and Initial Data is loaded on startup using `Flyway`
+2. There will be few `Airports` and `Flights` on startup
+3. Please use appropriate `name` or `code` or `page number` as the GET api param for filtering
