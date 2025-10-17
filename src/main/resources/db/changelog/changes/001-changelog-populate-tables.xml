@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="Create table AIRPORT v1" author="Dmytro">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AIRPORT"/>
+            </not>
+        </preConditions>
+        <createTable tableName="AIRPORT">
+            <column name="ID" type="UUID">
+                <constraints primaryKeyName="PK_AIRPORT_ID" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="CODE" type="VARCHAR(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="COUNTRY" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Create table FLIGHT v1" author="Dmytro">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="FLIGHT"/>
+            </not>
+        </preConditions>
+        <createTable tableName="FLIGHT">
+            <column name="ID" type="UUID">
+                <constraints primaryKeyName="PK_FLIGHT_ID" primaryKey="true"/>
+            </column>
+            <column name="CODE" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORIGIN_AIRPORT_CODE" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESTINATION_AIRPORT_CODE" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DEPATRUE_DATE_TIME" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ARRIVAL_DATE_TIME" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="FLIGHT_STATUS" type="VARCHAR(60)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PASSENGER_COUNT" type="SMALLINT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Create table PASSENGER v2" author="Dmytro">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="PASSENGER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="PASSENGER">
+
+            <column name="ID" type="UUID">
+                <constraints primaryKeyName="PK_PASSENGER_ID" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="varchar(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FLIGHT_CODE" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- TEST DATA (Adding flights for testing) -->
+
+        <changeSet id="Persist test data" author="Dmytro">
+            <insert tableName="FLIGHT">
+                <column name="ID" value="7fc46067-26f7-4790-9d79-f7a0bc31ef75"/>
+                <column name="CODE" value="101"/>
+                <column name="ORIGIN_AIRPORT_CODE" value="101"/>
+                <column name="DESTINATION_AIRPORT_CODE" value="120"/>
+                <column name="DEPATRUE_DATE_TIME" valueDate="current_timestamp"/>
+                <column name="ARRIVAL_DATE_TIME" valueDate="current_timestamp"/>
+                <column name="FLIGHT_STATUS" value="PENDING"/>
+            </insert>
+
+            <insert tableName="FLIGHT">
+                <column name="ID" value="7fc46067-26f7-4790-9d79-f7a0bc31ef76"/>
+                <column name="CODE" value="201"/>
+                <column name="ORIGIN_AIRPORT_CODE" value="201"/>
+                <column name="DESTINATION_AIRPORT_CODE" value="220"/>
+                <column name="DEPATRUE_DATE_TIME" valueDate="current_timestamp"/>
+                <column name="ARRIVAL_DATE_TIME" valueDate="current_timestamp"/>
+                <column name="FLIGHT_STATUS" value="AVAILABLE"/>
+            </insert>
+
+            <insert tableName="FLIGHT">
+                <column name="ID" value="7fc46067-26f7-4790-9d79-f7a0bc31ef77"/>
+                <column name="CODE" value="301"/>
+                <column name="ORIGIN_AIRPORT_CODE" value="301"/>
+                <column name="DESTINATION_AIRPORT_CODE" value="320"/>
+                <column name="DEPATRUE_DATE_TIME" valueDate="current_timestamp"/>
+                <column name="ARRIVAL_DATE_TIME" valueDate="current_timestamp"/>
+                <column name="FLIGHT_STATUS" value="UNAVAILABLE"/>
+            </insert>
+
+            <insert tableName="AIRPORT">
+                <column name="ID" value="7fc46067-26f7-1313-9d79-f7a0bc31ef77"/>
+                <column name="CODE" value="KV"/>
+                <column name="NAME" value="KV"/>
+                <column name="COUNTRY" value="UKR"/>
+            </insert>
+
+            <insert tableName="AIRPORT">
+                <column name="ID" value="7fc46067-26f7-1212-9d79-f7a0bc31ef77"/>
+                <column name="CODE" value="KH"/>
+                <column name="NAME" value="KH"/>
+                <column name="COUNTRY" value="UKR"/>
+            </insert>
+        </changeSet>
+
+</databaseChangeLog>

@@ -1,10 +1,33 @@
 package com.transferz.dao;
 
-public class Passenger
-{
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
-	private String name;
+import javax.persistence.*;
+import java.util.UUID;
 
-	private String flightCode;
+@Data
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "PASSENGER")
+public class Passenger {
+
+  @Id
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(
+      name = "UUID",
+      strategy = "org.hibernate.id.UUIDGenerator"
+  )
+  private UUID id;
+  @Column(name = "NAME", length = 1024)
+  private String name;
+
+  @Column(name = "FLIGHT_CODE", length = 20)
+  private String flightCode;
 
 }
