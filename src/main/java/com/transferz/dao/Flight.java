@@ -1,17 +1,35 @@
 package com.transferz.dao;
 
+import lombok.Data;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "flights")
+@Data
 public class Flight
 {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(nullable = false, length = 20)
 	private String code;
 
-	private String originAirportId;
+	@Column(nullable = false, length = 20)
+	private String originAirportCode;
 
-	private String destinationAirportId;
+	@Column(nullable = false, length = 20)
+	private String destinationAirportCode;
 
-	private LocalDateTime departureTime;
+	@Column(nullable = false)
+	private LocalDateTime departureDateTime;
 
-	private LocalDateTime arrivalTime;
+	@Column(nullable = false)
+	private LocalDateTime arrivalDateTime;
+
+	@Column(nullable = false)
+	private Integer passengerCount = 0;
 	
 }
