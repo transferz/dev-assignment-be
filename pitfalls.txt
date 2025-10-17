@@ -1,9 +1,0 @@
-- no global exception handling
-- no @Transactional on service methods
-- System.out.println - logging
-- hardcoded values instead of configuration
-- simple objects instead of records
-- RuntimeException instead of custom exceptions
-- no input validation
-- no unit tests
-- no logging framework
